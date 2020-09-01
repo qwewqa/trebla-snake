@@ -1,0 +1,17 @@
+script Apple {
+    data var index: Number
+
+    callback shouldSpawn {
+        (score >= index) or (live == false)
+    }
+
+    callback updateParallel {
+        if (live) {
+            entityJudgment = 1
+            Clip(1).play()
+        }
+        true
+    }
+}
+
+note archetype Apple -> Apple()

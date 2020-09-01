@@ -1,0 +1,79 @@
+script Init {
+    callback preprocess {
+        menuUI = UIInfo(
+            anchorX = aspectRatio - 0.05,
+            anchorY = 0.95,
+            pivotX = 1,
+            pivotY = 1,
+            width = 0.15,
+            height = 0.15,
+            alpha = 1,
+            background = true,
+        )
+        judgmentUI = UIInfo(
+            anchorX = 0,
+            anchorY = 2 * -0.25,
+            pivotX = 0.5,
+            pivotY = 0,
+            width = 0.8 * uiJudgmentSize,
+            height = 0.2 * uiJudgmentSize,
+            alpha = uiJudgmentAlpha,
+        )
+        comboValueUI = UIInfo(
+            anchorX = aspectRatio * 0.7,
+            anchorY = 0,
+            pivotX = 0.5,
+            pivotY = 0,
+            width = 0.5 * uiComboSize,
+            height = 0.25 * uiComboSize,
+            alpha = uiComboAlpha,
+        )
+        comboTextUI = UIInfo(
+            anchorX = aspectRatio * 0.7,
+            anchorY = 0,
+            pivotX = 0.5,
+            pivotY = 1,
+            width = 0.5 * uiComboSize,
+            height = 0.15 * uiComboSize,
+            alpha = uiComboAlpha,
+        )
+        scoreBarUI = UIInfo(
+            anchorX = 0.05 - aspectRatio,
+            anchorY = 0.95,
+            pivotX = 0,
+            pivotY = 1,
+            width = 0.75,
+            height = 0.15,
+            alpha = 1,
+            horizontalAlign = -1,
+            background = true,
+        )
+        scoreValueUI = UIInfo(
+            anchorX = 0.2 - aspectRatio,
+            anchorY = 0.95,
+            pivotX = 0,
+            pivotY = 1,
+            width = 0.6,
+            height = 0.15,
+            alpha = 1,
+            horizontalAlign = 1
+        )
+    }
+
+    callback updateSequential {
+        live = true
+        *states[0] = 1
+        *states[1] = 1
+        *states[2] = 1
+        *states[3] = 1
+        *states[4] = 2
+        *coordinates[0] = 0
+        *coordinates[1] = 1
+        *coordinates[2] = 2
+        *coordinates[3] = 3
+        *coordinates[4] = 4
+        true
+    }
+}
+
+archetype Init -> Init()

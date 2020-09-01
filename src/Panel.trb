@@ -1,0 +1,23 @@
+script Panel {
+    data var row: Number
+    data var col: Number
+
+    var index = row * boardSize - boardSize + col - 1
+
+    var x = (col - (boardSize + 1) / 2) * panelSize
+    var y = (row - (boardSize + 1) / 2) * panelSize
+
+    var quad = centerSquare(Point(x, y), panelSize / 2)
+
+    callback updateParallel {
+        var state = *states[index]
+        quad.draw(40000, -100)
+        when {
+            state == snake -> quad.draw(1002, 100)
+            state == head -> quad.draw(1003, 100)
+            state == apple -> quad.draw(1001, 100)
+        }
+    }
+}
+
+archetype Panel -> Panel()

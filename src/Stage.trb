@@ -1,0 +1,143 @@
+script Stage {
+    callback shouldSpawn {
+        EntityInfo(entityIndex = 0).despawned()
+    }
+
+    var lastTime = time
+
+    var startIndex = 0
+    var endIndex = baseLength - 1
+    var size = baseLength
+
+    var direction: Number
+    
+    let right = 0
+    let up = 1
+    let left = 2
+    let down = 3
+
+    func checkEdgeCollide(): Boolean {
+        var headCoordinate = *coordinates[endIndex]
+        var ok = true
+        if (
+            (direction == right && (headCoordinate % boardSize) == boardSize - 1) ||
+            (direction == left && (headCoordinate % boardSize) == 0) ||
+            (direction == up && floor(headCoordinate / boardSize) == boardSize - 1) ||
+            (direction == down && floor(headCoordinate / boardSize) == 0)
+        ) {
+            fail()
+            ok = false
+        }
+        ok
+    }
+
+    func move(): Boolean {
+        lastDirection = direction
+        var headCoordinate = *coordinates[endIndex]
+        *states[headCoordinate] = snake
+        endIndex += 1
+        endIndex %= panelCount
+        when {
+            direction == right -> *coordinates[endIndex] = headCoordinate + 1
+            direction == left -> *coordinates[endIndex] = headCoordinate - 1
+            direction == up -> *coordinates[endIndex] = headCoordinate + boardSize
+            direction == down -> *coordinates[endIndex] = headCoordinate - boardSize
+        }
+        var targetState = *states[*coordinates[endIndex]]
+        when {
+            targetState == empty -> {
+                *states[*coordinates[endIndex]] = head
+                moveTail()
+            }
+            targetState == snake -> live = false
+            targetState == apple -> {
+                score++
+                size++
+                *states[*coordinates[endIndex]] = head
+                spawnApple()
+            }
+        }
+        true
+    }
+
+    func moveTail() {
+        *states[*coordinates[startIndex]] = empty
+        startIndex += 1
+        startIndex %= panelCount
+    }
+
+    func spawnApple() {
+        var target = randomInteger(0, panelCount - size)
+        var num = -1
+        var index = -1
+        while (num != target) {
+            index++
+            if (*states[index] == empty) {
+                num++
+            }
+        }
+        *states[index] = apple
+    }
+
+    func fail() {
+        live = false
+    }
+
+    func updateDirection() {
+        if (touchVR >= vrThreshold) {
+            var newDirection = 0
+            when {
+                touchVW >= PI * 3/4 -> newDirection = left
+                touchVW >= PI * 1/4 -> newDirection = up
+                touchVW >= PI * -1/4 -> newDirection = right
+                touchVW >= PI * -3/4 -> newDirection = down
+                else -> newDirection = left
+            }
+            if ((lastDirection - newDirection) % 2 != 0) {
+                direction = newDirection
+            }
+        }
+    }
+
+    var initializing = true
+    var lastDirection = right
+
+    callback updateSequential {
+        if (initializing) {
+            spawnApple()
+            initializing = false
+        }
+        if (time - lastTime >= interval && live && size < panelCount) {
+            lastTime = time
+            checkEdgeCollide() && move()
+        }
+    }
+
+    callback touch {
+        updateDirection()
+    }
+}
+
+archetype Stage -> Stage()
+
+level var live: Boolean
+level var score: Number
+
+let empty = 0
+let snake = 1
+let head = 2
+let apple = 3
+
+let baseLength = 5
+
+let boardSize = 15
+let boardWidth = 1.8
+let panelSize = boardWidth / boardSize
+
+let panelCount = boardSize ^ 2
+let coordinates = Pointer[List[Number, panelCount]](ENTITY_SHARED_MEMORY_ARRAY, 0)
+let states = Pointer[List[Number, panelCount]](ENTITY_SHARED_MEMORY_ARRAY, boardSize^2)
+
+let interval = 0.75 / options.`#NOTE_SPEED`
+
+let vrThreshold = 1.5
