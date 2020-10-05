@@ -2,7 +2,7 @@ script Apple {
     data var index: Number
 
     callback shouldSpawn {
-        (score >= index) or (live == false)
+        (score >= index) || (live == false)
     }
 
     callback updateParallel {

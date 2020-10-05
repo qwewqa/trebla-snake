@@ -135,8 +135,8 @@ let boardWidth = 1.8
 let panelSize = boardWidth / boardSize
 
 let panelCount = boardSize ^ 2
-let coordinates = Pointer[List[Number, panelCount]](ENTITY_SHARED_MEMORY_ARRAY, 0)
-let states = Pointer[List[Number, panelCount]](ENTITY_SHARED_MEMORY_ARRAY, boardSize^2)
+let coordinates = Pointer[List[Number][panelCount]](ENTITY_SHARED_MEMORY_ARRAY, 0)
+let states = Pointer[List[Number][panelCount]](ENTITY_SHARED_MEMORY_ARRAY, boardSize^2)
 
 let interval = 0.75 / options.`#NOTE_SPEED`
 
