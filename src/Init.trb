@@ -62,11 +62,11 @@ script Init {
 
     callback updateSequential {
         live = true
-        *states[0] = 1
-        *states[1] = 1
-        *states[2] = 1
-        *states[3] = 1
-        *states[4] = 2
+        *states[0] = PanelState.BODY
+        *states[1] = PanelState.BODY
+        *states[2] = PanelState.BODY
+        *states[3] = PanelState.BODY
+        *states[4] = PanelState.HEAD
         *coordinates[0] = 0
         *coordinates[1] = 1
         *coordinates[2] = 2

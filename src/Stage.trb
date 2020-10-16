@@ -9,21 +9,23 @@ script Stage {
     var endIndex = baseLength - 1
     var size = baseLength
 
-    var direction: Number
-    
-    let right = 0
-    let up = 1
-    let left = 2
-    let down = 3
+    enum Direction {
+        RIGHT = 0,
+        UP,
+        LEFT,
+        DOWN,
+    }
+
+    var direction: Direction
 
     func checkEdgeCollide(): Boolean {
         var headCoordinate = *coordinates[endIndex]
         var ok = true
         if (
-            (direction == right && (headCoordinate % boardSize) == boardSize - 1) ||
-            (direction == left && (headCoordinate % boardSize) == 0) ||
-            (direction == up && floor(headCoordinate / boardSize) == boardSize - 1) ||
-            (direction == down && floor(headCoordinate / boardSize) == 0)
+            (direction matches Direction.RIGHT && (headCoordinate % boardSize) == boardSize - 1) ||
+            (direction matches Direction.LEFT && (headCoordinate % boardSize) == 0) ||
+            (direction matches Direction.UP && floor(headCoordinate / boardSize) == boardSize - 1) ||
+            (direction matches Direction.DOWN && floor(headCoordinate / boardSize) == 0)
         ) {
             fail()
             ok = false
@@ -34,34 +36,35 @@ script Stage {
     func move(): Boolean {
         lastDirection = direction
         var headCoordinate = *coordinates[endIndex]
-        *states[headCoordinate] = snake
+        *states[headCoordinate] = PanelState.BODY
         endIndex += 1
         endIndex %= panelCount
-        when {
-            direction == right -> *coordinates[endIndex] = headCoordinate + 1
-            direction == left -> *coordinates[endIndex] = headCoordinate - 1
-            direction == up -> *coordinates[endIndex] = headCoordinate + boardSize
-            direction == down -> *coordinates[endIndex] = headCoordinate - boardSize
+        when (direction) {
+            is Direction.RIGHT -> *coordinates[endIndex] = headCoordinate + 1
+            is Direction.LEFT -> *coordinates[endIndex] = headCoordinate - 1
+            is Direction.UP -> *coordinates[endIndex] = headCoordinate + boardSize
+            is Direction.DOWN -> *coordinates[endIndex] = headCoordinate - boardSize
         }
         var targetState = *states[*coordinates[endIndex]]
-        when {
-            targetState == empty -> {
-                *states[*coordinates[endIndex]] = head
+        when (targetState) {
+            is PanelState.EMPTY -> {
+                *states[*coordinates[endIndex]] = PanelState.HEAD
                 moveTail()
             }
-            targetState == snake -> live = false
-            targetState == apple -> {
+            is PanelState.BODY -> live = false
+            is PanelState.APPLE -> {
                 score++
                 size++
-                *states[*coordinates[endIndex]] = head
+                *states[*coordinates[endIndex]] = PanelState.HEAD
                 spawnApple()
             }
+            is PanelState.HEAD -> { /* unreachable */ }
         }
         true
     }
 
     func moveTail() {
-        *states[*coordinates[startIndex]] = empty
+        *states[*coordinates[startIndex]] = PanelState.EMPTY
         startIndex += 1
         startIndex %= panelCount
     }
@@ -72,11 +75,11 @@ script Stage {
         var index = -1
         while (num != target) {
             index++
-            if (*states[index] == empty) {
+            if (*states[index] matches PanelState.EMPTY) {
                 num++
             }
         }
-        *states[index] = apple
+        *states[index] = PanelState.APPLE
     }
 
     func fail() {
@@ -85,22 +88,22 @@ script Stage {
 
     func updateDirection() {
         if (touchVR >= vrThreshold) {
-            var newDirection = 0
+            var newDirection = Direction.LEFT
             when {
-                touchVW >= PI * 3/4 -> newDirection = left
-                touchVW >= PI * 1/4 -> newDirection = up
-                touchVW >= PI * -1/4 -> newDirection = right
-                touchVW >= PI * -3/4 -> newDirection = down
-                else -> newDirection = left
+                touchVW >= PI * 3/4 -> newDirection = Direction.LEFT
+                touchVW >= PI * 1/4 -> newDirection = Direction.UP
+                touchVW >= PI * -1/4 -> newDirection = Direction.RIGHT
+                touchVW >= PI * -3/4 -> newDirection = Direction.DOWN
+                else -> newDirection = Direction.LEFT
             }
-            if ((lastDirection - newDirection) % 2 != 0) {
+            if ((lastDirection.ordinal - newDirection.ordinal) % 2 != 0) {
                 direction = newDirection
             }
         }
     }
 
     var initializing = true
-    var lastDirection = right
+    var lastDirection = Direction.RIGHT
 
     callback updateSequential {
         if (initializing) {
@@ -123,10 +126,12 @@ archetype Stage -> Stage()
 level var live: Boolean
 level var score: Number
 
-let empty = 0
-let snake = 1
-let head = 2
-let apple = 3
+enum PanelState {
+    EMPTY = 0,
+    BODY,
+    HEAD,
+    APPLE
+}
 
 let baseLength = 5
 
@@ -136,7 +141,7 @@ let panelSize = boardWidth / boardSize
 
 let panelCount = boardSize ^ 2
 let coordinates = Pointer[List[Number][panelCount]](ENTITY_SHARED_MEMORY_ARRAY, 0)
-let states = Pointer[List[Number][panelCount]](ENTITY_SHARED_MEMORY_ARRAY, boardSize^2)
+let states = Pointer[List[PanelState][panelCount]](ENTITY_SHARED_MEMORY_ARRAY, boardSize^2)
 
 let interval = 0.75 / options.`#NOTE_SPEED`
 

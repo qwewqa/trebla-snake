@@ -12,10 +12,11 @@ script Panel {
     callback updateParallel {
         var state = *states[index]
         quad.draw(40000, -100)
-        when {
-            state == snake -> quad.draw(1002, 100)
-            state == head -> quad.draw(1003, 100)
-            state == apple -> quad.draw(1001, 100)
+        when (state) {
+            is PanelState.BODY -> quad.draw(1002, 100)
+            is PanelState.HEAD -> quad.draw(1003, 100)
+            is PanelState.APPLE -> quad.draw(1001, 100)
+            else -> {}
         }
     }
 }
