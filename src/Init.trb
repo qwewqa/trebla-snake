@@ -1,7 +1,7 @@
 script Init {
     callback preprocess {
-        menuUI = UIInfo(
-            anchorX = aspectRatio - 0.05,
+        levelUI.menu = UIInfo(
+            anchorX = levelData.aspectRatio - 0.05,
             anchorY = 0.95,
             pivotX = 1,
             pivotY = 1,
@@ -10,35 +10,35 @@ script Init {
             alpha = 1,
             background = true,
         )
-        judgmentUI = UIInfo(
+        levelUI.judgment = UIInfo(
             anchorX = 0,
             anchorY = 2 * -0.25,
             pivotX = 0.5,
             pivotY = 0,
-            width = 0.8 * uiJudgmentSize,
-            height = 0.2 * uiJudgmentSize,
-            alpha = uiJudgmentAlpha,
+            width = 0.8 * options.uiJudgmentSize,
+            height = 0.2 * options.uiJudgmentSize,
+            alpha = options.uiJudgmentAlpha,
         )
-        comboValueUI = UIInfo(
-            anchorX = aspectRatio * 0.7,
+        levelUI.comboValue = UIInfo(
+            anchorX = levelData.aspectRatio * 0.7,
             anchorY = 0,
             pivotX = 0.5,
             pivotY = 0,
-            width = 0.5 * uiComboSize,
-            height = 0.25 * uiComboSize,
-            alpha = uiComboAlpha,
+            width = 0.5 * options.uiComboSize,
+            height = 0.25 * options.uiComboSize,
+            alpha = options.uiComboAlpha,
         )
-        comboTextUI = UIInfo(
-            anchorX = aspectRatio * 0.7,
+        levelUI.comboText = UIInfo(
+            anchorX = levelData.aspectRatio * 0.7,
             anchorY = 0,
             pivotX = 0.5,
             pivotY = 1,
-            width = 0.5 * uiComboSize,
-            height = 0.15 * uiComboSize,
-            alpha = uiComboAlpha,
+            width = 0.5 * options.uiComboSize,
+            height = 0.15 * options.uiComboSize,
+            alpha = options.uiComboAlpha,
         )
-        scoreBarUI = UIInfo(
-            anchorX = 0.05 - aspectRatio,
+        levelUI.scoreBar = UIInfo(
+            anchorX = 0.05 - levelData.aspectRatio,
             anchorY = 0.95,
             pivotX = 0,
             pivotY = 1,
@@ -48,8 +48,8 @@ script Init {
             horizontalAlign = -1,
             background = true,
         )
-        scoreValueUI = UIInfo(
-            anchorX = 0.2 - aspectRatio,
+        levelUI.scoreValue = UIInfo(
+            anchorX = 0.2 - levelData.aspectRatio,
             anchorY = 0.95,
             pivotX = 0,
             pivotY = 1,

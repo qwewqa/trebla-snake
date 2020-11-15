@@ -87,13 +87,13 @@ script Stage {
     }
 
     func updateDirection() {
-        if (touchVR >= vrThreshold) {
+        if (touchData.vr >= vrThreshold) {
             var newDirection = Direction.LEFT
             when {
-                touchVW >= PI * 3/4 -> newDirection = Direction.LEFT
-                touchVW >= PI * 1/4 -> newDirection = Direction.UP
-                touchVW >= PI * -1/4 -> newDirection = Direction.RIGHT
-                touchVW >= PI * -3/4 -> newDirection = Direction.DOWN
+                touchData.vw >= PI * 3/4 -> newDirection = Direction.LEFT
+                touchData.vw >= PI * 1/4 -> newDirection = Direction.UP
+                touchData.vw >= PI * -1/4 -> newDirection = Direction.RIGHT
+                touchData.vw >= PI * -3/4 -> newDirection = Direction.DOWN
                 else -> newDirection = Direction.LEFT
             }
             if ((lastDirection.ordinal - newDirection.ordinal) % 2 != 0) {

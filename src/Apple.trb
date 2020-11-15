@@ -7,7 +7,7 @@ script Apple {
 
     callback updateParallel {
         if (live) {
-            entityJudgment = EntityJudgement.PERFECT
+            entityInput.judgment = EntityJudgement.PERFECT
             Clip(1).play()
         }
         true
