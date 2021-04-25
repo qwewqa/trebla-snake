@@ -3,11 +3,11 @@ script Stage {
         EntityInfo(entityIndex = 0).despawned()
     }
 
-    var lastTime = time
+    var lastTime: Number
 
-    var startIndex = 0
-    var endIndex = baseLength - 1
-    var size = baseLength
+    var startIndex: Number
+    var endIndex: Number
+    var size: Number
 
     enum Direction {
         RIGHT = 0,
@@ -17,6 +17,15 @@ script Stage {
     }
 
     var direction: Direction
+    var initializing: Boolean
+    var lastDirection: Direction
+
+    callback initialize {
+        lastTime = time
+        endIndex = baseLength - 1
+        size = baseLength
+        initializing = true
+    }
 
     func checkEdgeCollide(): Boolean {
         var headCoordinate = *coordinates[endIndex]
@@ -101,9 +110,6 @@ script Stage {
             }
         }
     }
-
-    var initializing = true
-    var lastDirection = Direction.RIGHT
 
     callback updateSequential {
         if (initializing) {

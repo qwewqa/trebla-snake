@@ -2,12 +2,19 @@ script Panel {
     data var row: Number
     data var col: Number
 
-    var index = row * boardSize - boardSize + col - 1
+    var index: Number
 
-    var x = (col - (boardSize + 1) / 2) * panelSize
-    var y = (row - (boardSize + 1) / 2) * panelSize
+    var x: Number
+    var y: Number
 
-    var quad = centerSquare(Point(x, y), panelSize / 2)
+    var quad: Quad
+
+    callback initialize {
+        index = row * boardSize - boardSize + col - 1
+        x = (col - (boardSize + 1) / 2) * panelSize
+        y = (row - (boardSize + 1) / 2) * panelSize
+        quad = centerSquare(Point(x, y), panelSize / 2)
+    }
 
     callback updateParallel {
         var state = *states[index]
